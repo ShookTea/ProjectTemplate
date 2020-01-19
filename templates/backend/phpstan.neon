@@ -1,0 +1,4 @@
+parameters:
+    checkMissingIterableValueType: false
+    excludes_analyse:
+        - %currentWorkingDirectory%/src/Migrations/*

@@ -16,6 +16,7 @@ if [ -d "$FULLDIR" ]; then
   exit
 fi
 
+echo "Creating directory $FULLDIR..."
 mkdir -p $FULLDIR
 
 for template in $(find $(dirname $0)/templates); do
@@ -28,6 +29,7 @@ for template in $(find $(dirname $0)/templates); do
     fi
     src="templates/$TEMPLATEPATH"
     dest="$FULLDIR/$TEMPLATEPATH"
+    echo "Copying '$src' to '$dest'..."
     cat $src | sed -e "s|\${GITLAB_REPO}|${GITLAB_DOCKER_REPO}|" > $dest
   fi
 done
