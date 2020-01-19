@@ -13,6 +13,8 @@ if [ -d "$FULLDIR" ]; then
   exit
 fi
 
+mkdir -p $FULLDIR
+
 for template in $(find $(dirname $0)/templates); do
   if [ ! -d "$template" ]; then
     TEMPLATEPATH=${template#*/*/}
@@ -21,6 +23,6 @@ for template in $(find $(dirname $0)/templates); do
     if [ "$TEMPLATEDIR" != "." ]; then
       mkdir -p "$FULLDIR/$TEMPLATEDIR"
     fi
-    echo "$TEMPLATEPATH in $TEMPLATEDIR"
+    cp "templates/$TEMPLATEPATH" "$FULLDIR/$TEMPLATEPATH"
   fi
 done
