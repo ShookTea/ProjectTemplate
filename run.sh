@@ -1,11 +1,26 @@
 #!/usr/bin/env bash
-outputDir=$1
-backend="$outputDir/backend"
-frontend="$outputDir/frontend"
-images="$outputDir/images"
-phpImage="$images/php-dev"
+# Current user directory
+USERDIR="$(pwd -P)"
+BUILDDIR=${1-build}
+FULLDIR="$USERDIR/$BUILDDIR"
 
-mkdir -p "$backend"
-mkdir -p "$frontend"
-mkdir -p "$images"
-mkdir -p "$phpImage"
+if [ -f "$FULLDIR" ]; then
+  echo "$FULLDIR already exists"
+  exit
+fi
+if [ -d "$FULLDIR" ]; then
+  echo "$FULLDIR already exists"
+  exit
+fi
+
+for template in $(find $(dirname $0)/templates); do
+  if [ ! -d "$template" ]; then
+    TEMPLATEPATH=${template#*/*/}
+    TEMPLATEDIR=$(dirname $TEMPLATEPATH)
+
+    if [ "$TEMPLATEDIR" != "." ]; then
+      mkdir -p "$FULLDIR/$TEMPLATEDIR"
+    fi
+    echo "$TEMPLATEPATH in $TEMPLATEDIR"
+  fi
+done
