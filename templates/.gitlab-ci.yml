@@ -25,8 +25,8 @@ php_image:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   script:
     - cd images/php-dev
-    - docker build -t registry.gitlab.com/shooktea/teamdriver/php-dev .
-    - docker push registry.gitlab.com/shooktea/teamdriver/php-dev
+    - docker build -t ${GITLAB_REPO}/php-dev .
+    - docker push ${GITLAB_REPO}/php-dev
 
 ###########
 # INSTALL #
@@ -46,7 +46,7 @@ install frontend dependencies:
 
 install backend dependencies:
   stage: install
-  image: registry.gitlab.com/shooktea/teamdriver/php-dev
+  image: ${GITLAB_REPO}/php-dev
   script:
     - cd backend
     - composer install
@@ -92,7 +92,7 @@ build frontend:
 
 code sniffer:
   stage: test
-  image: registry.gitlab.com/shooktea/teamdriver/php-dev
+  image: ${GITLAB_REPO}/php-dev
   dependencies:
     - install backend dependencies
   script:
@@ -101,7 +101,7 @@ code sniffer:
 
 static analysis:
   stage: test
-  image: registry.gitlab.com/shooktea/teamdriver/php-dev
+  image: ${GITLAB_REPO}/php-dev
   dependencies:
     - install backend dependencies
   script:
@@ -110,7 +110,7 @@ static analysis:
 
 backend unit test:
   stage: test
-  image: registry.gitlab.com/shooktea/teamdriver/php-dev
+  image: ${GITLAB_REPO}/php-dev
   dependencies:
     - install backend dependencies
   services:
@@ -146,8 +146,8 @@ Build app (master):
   before_script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   script:
-    - docker build -t registry.gitlab.com/shooktea/teamdriver:latest .
-    - docker push registry.gitlab.com/shooktea/teamdriver:latest
+    - docker build -t ${GITLAB_REPO}:latest .
+    - docker push ${GITLAB_REPO}:latest
 
 Build app (tag):
   stage: build
@@ -165,5 +165,5 @@ Build app (tag):
   before_script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   script:
-    - docker build -t "registry.gitlab.com/shooktea/teamdriver:$CI_COMMIT_REF_NAME" .
-    - docker push "registry.gitlab.com/shooktea/teamdriver:$CI_COMMIT_REF_NAME"
+    - docker build -t "${GITLAB_REPO}:$CI_COMMIT_REF_NAME" .
+    - docker push "${GITLAB_REPO}:$CI_COMMIT_REF_NAME"

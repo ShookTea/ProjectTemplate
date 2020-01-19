@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
+# User arguments
+BUILDDIR=${1-build}
+GITLAB_DOCKER_REPO=${2-registry.gitlab.com/shooktea/teamdriver}
+
 # Current user directory
 USERDIR="$(pwd -P)"
-BUILDDIR=${1-build}
 FULLDIR="$USERDIR/$BUILDDIR"
 
 if [ -f "$FULLDIR" ]; then
@@ -23,6 +26,8 @@ for template in $(find $(dirname $0)/templates); do
     if [ "$TEMPLATEDIR" != "." ]; then
       mkdir -p "$FULLDIR/$TEMPLATEDIR"
     fi
-    cp "templates/$TEMPLATEPATH" "$FULLDIR/$TEMPLATEPATH"
+    src="templates/$TEMPLATEPATH"
+    dest="$FULLDIR/$TEMPLATEPATH"
+    cat $src | sed -e "s|\${GITLAB_REPO}|${GITLAB_DOCKER_REPO}|" > $dest
   fi
 done
