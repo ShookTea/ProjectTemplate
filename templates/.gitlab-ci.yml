@@ -116,12 +116,12 @@ backend unit test:
   services:
     - mysql:8.0.15
   variables:
-    MYSQL_DATABASE: "teamdriver_db"
-    MYSQL_USER: "teamdriver_user"
-    MYSQL_PASSWORD: "teamdriver_password"
+    MYSQL_DATABASE: "db_name"
+    MYSQL_USER: "db_user"
+    MYSQL_PASSWORD: "db_password"
     MYSQL_RANDOM_ROOT_PASSWORD: "yes"
     APP_ENV: "test"
-    DATABASE_URL: "mysql://teamdriver_user:teamdriver_password@mysql:3306/teamdriver_db?serverVersion=8"
+    DATABASE_URL: "mysql://db_user:db_password@mysql:3306/db_name?serverVersion=8"
     MAILER_URL: "null://localhost"
   script:
     - cd backend
