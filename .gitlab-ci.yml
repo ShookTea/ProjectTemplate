@@ -1,0 +1,169 @@
+stages:
+  - preinstall
+  - install
+  - test
+  - build
+
+##############
+# PREINSTALL #
+##############
+
+php_image:
+  stage: preinstall
+  image: docker:latest
+  services:
+    - name: docker:dind
+      entrypoint: ["env", "-u", "DOCKER_HOST"]
+      command: ["dockerd-entrypoint.sh"]
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+  only:
+    - master
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - cd images/php-dev
+    - docker build -t registry.gitlab.com/shooktea/teamdriver/php-dev .
+    - docker push registry.gitlab.com/shooktea/teamdriver/php-dev
+
+###########
+# INSTALL #
+###########
+
+install frontend dependencies:
+  stage: install
+  image: node:12.13.0-alpine
+  script:
+    - cd frontend
+    - npm ci
+  artifacts:
+    paths:
+      - frontend/node_modules
+    expire_in: 1 hour
+
+
+install backend dependencies:
+  stage: install
+  image: registry.gitlab.com/shooktea/teamdriver/php-dev
+  script:
+    - cd backend
+    - composer install
+  artifacts:
+    paths:
+      - backend/vendor
+    expire_in: 1 hour
+
+########
+# TEST #
+########
+
+eslint:
+  stage: test
+  image: node:12.13.0-alpine
+  dependencies:
+    - install frontend dependencies
+  script:
+    - cd frontend
+    - npm run test:lint
+
+frontend unit test:
+  stage: test
+  image: node:12.13.0-alpine
+  dependencies:
+    - install frontend dependencies
+  script:
+    - cd frontend
+    - npm run test:unit
+
+build frontend:
+  stage: test
+  image: node:12.13.0-alpine
+  dependencies:
+    - install frontend dependencies
+  script:
+    - cd frontend
+    - npm run build
+  artifacts:
+    paths:
+      - frontend/dist
+    expire_in: 1 hour
+
+code sniffer:
+  stage: test
+  image: registry.gitlab.com/shooktea/teamdriver/php-dev
+  dependencies:
+    - install backend dependencies
+  script:
+    - cd backend
+    - vendor/bin/phpcs
+
+static analysis:
+  stage: test
+  image: registry.gitlab.com/shooktea/teamdriver/php-dev
+  dependencies:
+    - install backend dependencies
+  script:
+    - cd backend
+    - vendor/bin/phpstan analyse --level max src
+
+backend unit test:
+  stage: test
+  image: registry.gitlab.com/shooktea/teamdriver/php-dev
+  dependencies:
+    - install backend dependencies
+  services:
+    - mysql:8.0.15
+  variables:
+    MYSQL_DATABASE: "teamdriver_db"
+    MYSQL_USER: "teamdriver_user"
+    MYSQL_PASSWORD: "teamdriver_password"
+    MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+    APP_ENV: "test"
+    DATABASE_URL: "mysql://teamdriver_user:teamdriver_password@mysql:3306/teamdriver_db?serverVersion=8"
+    MAILER_URL: "null://localhost"
+  script:
+    - cd backend
+    - bin/console cache:warmup
+    - bin/console doctrine:migrations:migrate --allow-no-migration --no-interaction
+    - vendor/bin/phpunit --coverage-text
+  coverage: '/^\s*Lines:\s*\d+.\d+\%/'
+
+Build app (master):
+  stage: build
+  image: docker:latest
+  services:
+    - name: docker:dind
+      entrypoint: ["env", "-u", "DOCKER_HOST"]
+      command: ["dockerd-entrypoint.sh"]
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+  only:
+    - master
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - docker build -t registry.gitlab.com/shooktea/teamdriver:latest .
+    - docker push registry.gitlab.com/shooktea/teamdriver:latest
+
+Build app (tag):
+  stage: build
+  image: docker:latest
+  services:
+    - name: docker:dind
+      entrypoint: ["env", "-u", "DOCKER_HOST"]
+      command: ["dockerd-entrypoint.sh"]
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+  only:
+    - tags
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - docker build -t "registry.gitlab.com/shooktea/teamdriver:$CI_COMMIT_REF_NAME" .
+    - docker push "registry.gitlab.com/shooktea/teamdriver:$CI_COMMIT_REF_NAME"
