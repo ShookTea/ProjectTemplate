@@ -125,8 +125,8 @@ backend unit test:
     MAILER_URL: "null://localhost"
   script:
     - cd backend
-    - bin/console cache:warmup
-    - bin/console doctrine:migrations:migrate --allow-no-migration --no-interaction
+    - php bin/console cache:warmup
+    - php bin/console doctrine:migrations:migrate --allow-no-migration --no-interaction
     - vendor/bin/phpunit --coverage-text
   coverage: '/^\s*Lines:\s*\d+.\d+\%/'
 
