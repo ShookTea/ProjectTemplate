@@ -21,4 +21,4 @@ for template in $(find "$ALL_TEMPLATE_DIR"); do
 done
 
 echo " done."
-echo "Application image will be pushed to $1 repository"
+echo "Application image will be pushed to $GITLAB_DOCKER_REPO repository."
