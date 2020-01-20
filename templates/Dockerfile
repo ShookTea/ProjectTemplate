@@ -27,3 +27,5 @@ COPY frontend/dist /usr/share/nginx/html/frontend/dist
 WORKDIR /usr/share/nginx/html/backend
 EXPOSE 80
 EXPOSE 8080
+
+ENTRYPOINT [ '/etc/entrypoint.sh' ]
