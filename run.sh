@@ -4,6 +4,8 @@ BUILDDIR="/dest"
 GITLAB_DOCKER_REPO=${1-registry.gitlab.com/shooktea/teamdriver}
 ALL_TEMPLATE_DIR="/app/templates"
 
+echo -n "Generating project..."
+
 for template in $(find "$ALL_TEMPLATE_DIR"); do
   if [ ! -d "$template" ]; then
     TEMPLATEPATH=${template#*/*/*/}
@@ -14,7 +16,9 @@ for template in $(find "$ALL_TEMPLATE_DIR"); do
     fi
     src="/app/templates/$TEMPLATEPATH"
     dest="$BUILDDIR/$TEMPLATEPATH"
-    echo "Copying '$src' to '$dest'..."
     cat $src | sed -e "s|\${GITLAB_REPO}|${GITLAB_DOCKER_REPO}|" > $dest
   fi
 done
+
+echo " done."
+echo "Application image will be pushed to $1 repository"
