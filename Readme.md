@@ -1,6 +1,10 @@
 # ProjectTemplate
 Project template with newest version of Vue and Symfony, Docker-based, with CI for GitLab
 
+Links:
+* [GitHub](https://github.com/ShookTea/ProjectTemplate)
+* [Docker Hub](https://hub.docker.com/r/shooktea/project-template)
+
 ## How to use
 
 Run command:
