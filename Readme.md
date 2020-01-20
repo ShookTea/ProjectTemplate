@@ -21,6 +21,7 @@ docker run -it --rm -v /home/nkowalik/projects/my-project:/dest shooktea/project
 ## After generation
 
 1. Enter generated directory
+1. Copy `.env.sample` to `.env` and fill variables with your configuration
 1. Initialize git repository and add remote directory. If you add this to correct GitLab repository, pipelines will work.
 1. Run `docker-compose up -d --build` to set up project on local environment
 1. Run following commands to set up frontend:

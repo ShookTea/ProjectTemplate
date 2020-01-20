@@ -32,7 +32,7 @@ services:
     ports:
       - "4000:80"
   node:
-    image: npm:13.6-alpine
+    image: node:13.6-alpine
     working_dir: /home/node/app
     volumes:
     - ./frontend:/home/node/app
