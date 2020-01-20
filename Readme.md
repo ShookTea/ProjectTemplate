@@ -25,7 +25,13 @@ docker run -it --rm -v /home/nkowalik/projects/my-project:/dest shooktea/project
 1. Run `docker-compose up -d --build` to set up project on local environment
 1. Run following commands to set up frontend:
     ```shell script
-    docker-compose run npm npm ci
-    docker-compose run npm npm run build
+    docker-compose run node npm ci
+    docker-compose run node npm run build
     ```
-1. Run `docker-compose exec `
+1. Run `docker-compose exec php composer install` to set up backend
+
+Following addresses should now work:
+* `localhost:80` - frontend
+* `localhost:8080` - backend
+* `localhost:3306` - MySQL
+* `localhost:4000` - Mailcatcher
