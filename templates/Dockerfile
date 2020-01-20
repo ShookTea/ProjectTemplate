@@ -1,5 +1,5 @@
 FROM ${GITLAB_REPO}/php-dev
-MAINTAINER Norbert Kowalik <kowaliknor@gmail.com>
+MAINTAINER Norbert Kowalik <norbert.kowalik@icloud.com>
 
 RUN apt-get update \
     && apt-get install -y nginx

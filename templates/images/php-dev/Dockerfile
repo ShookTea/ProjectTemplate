@@ -1,5 +1,5 @@
 FROM php:7.4.0-fpm
-MAINTAINER Norbert Kowalik <kowaliknor@gmail.com>
+MAINTAINER Norbert Kowalik <norbert.kowalik@icloud.com>
 COPY sources.list /etc/apt/sources.list
 RUN apt-get update \
     && apt-get install -y --no-install-recommends git zip zlib1g-dev libzip-dev
