@@ -1,7 +1,8 @@
-FROM php:7.4.1-cli-alpine
+FROM bash:latest
 MAINTAINER Norbert Kowalik <norbert.kowalik@icloud.com>
 
 COPY templates /app/templates
 COPY run.sh /app/run.sh
-RUN chmod +x run.sh
-ENTRYPOINT [ '/app/run.sh' ]
+RUN chmod +x /app/run.sh
+WORKDIR /app
+CMD [ '/app/run.sh' ]
