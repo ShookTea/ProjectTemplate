@@ -1,20 +1,11 @@
-FROM php:7.4.0-fpm
+FROM ${GITLAB_REPO}/php-dev
 MAINTAINER Norbert Kowalik <kowaliknor@gmail.com>
-COPY sources.list /etc/apt/sources.list
+
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends git zip zlib1g-dev libzip-dev nginx
+    && apt-get install -y nginx
 
-RUN curl --silent --show-error https://getcomposer.org/installer \
-        | php -- --install-dir /usr/bin --filename composer
-
-RUN mkdir /.composer \
-    && chown 1000:1000 /.composer \
-    && composer clear-cache \
-    && composer config -g repo.packagist composer https://packagist.org \
-    && composer config -g github-protocols https ssh
-RUN docker-php-ext-install zip pdo_mysql
-RUN composer global require hirak/prestissimo squizlabs/php_codesniffer
 COPY images/nginx.conf /etc/nginx/sites-enabled/default
+COPY images/xdebug_disabled.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 COPY images/entrypoint.sh /etc/entrypoint.sh
 RUN chmod +x /etc/entrypoint.sh
 
