@@ -3,7 +3,7 @@ services:
   proxy:
     image: nginx:1.15.5
     volumes:
-      - ./images/proxy.conf:/etc/nginx/conf.d/default.conf
+      - ./images/nginx.conf:/etc/nginx/conf.d/default.conf
       - ./backend:/usr/share/nginx/html/backend
       - ./frontend:/usr/share/nginx/html/frontend
     ports:
