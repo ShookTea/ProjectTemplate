@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # User arguments
 BUILDDIR="/dest"
 GITLAB_DOCKER_REPO=${1-registry.gitlab.com/shooktea/teamdriver}
