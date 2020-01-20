@@ -2,6 +2,7 @@
 # User arguments
 BUILDDIR=${1-build}
 GITLAB_DOCKER_REPO=${2-registry.gitlab.com/shooktea/teamdriver}
+ALL_TEMPLATE_DIR="/app/templates"
 
 # Current user directory
 USERDIR="$(pwd -P)"
@@ -19,7 +20,7 @@ fi
 echo "Creating directory $FULLDIR..."
 mkdir -p $FULLDIR
 
-for template in $(find $(dirname $0)/templates); do
+for template in $(find "$ALL_TEMPLATE_DIR"); do
   if [ ! -d "$template" ]; then
     TEMPLATEPATH=${template#*/*/}
     TEMPLATEDIR=$(dirname $TEMPLATEPATH)
