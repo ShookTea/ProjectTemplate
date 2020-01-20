@@ -23,13 +23,8 @@ docker run -it --rm -v /home/nkowalik/projects/my-project:/dest shooktea/project
 1. Enter generated directory
 1. Copy `.env.sample` to `.env` and fill variables with your configuration
 1. Initialize git repository and add remote directory. If you add this to correct GitLab repository, pipelines will work.
-1. Run `docker-compose up -d --build` to set up project on local environment
-1. Run following commands to set up frontend:
-    ```shell script
-    docker-compose run node npm ci
-    docker-compose run node npm run build
-    ```
-1. Run `docker-compose exec php composer install` to set up backend
+1. Run script `./one-time-setup.sh`. When it's finished, you can remove it.
+1. Create initial commit and push it to master.
 
 Following addresses should now work:
 * `localhost:80` - frontend
