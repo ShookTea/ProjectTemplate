@@ -31,3 +31,8 @@ services:
     image: nkowalik/mailcatcher
     ports:
       - "4000:80"
+  npm:
+    image: npm:13.6-alpine
+    working_dir: /home/node/app
+    volumes:
+    - ./frontend:/home/node/app
