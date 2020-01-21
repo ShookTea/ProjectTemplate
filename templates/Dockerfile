@@ -28,4 +28,5 @@ WORKDIR /usr/share/nginx/html/backend
 EXPOSE 80
 EXPOSE 8080
 
-ENTRYPOINT [ '/etc/entrypoint.sh' ]
+CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["/etc/entrypoint.sh"]
