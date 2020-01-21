@@ -4,7 +4,7 @@ MAINTAINER Norbert Kowalik <norbert.kowalik@icloud.com>
 RUN apt-get update \
     && apt-get install -y nginx
 
-COPY images/nginx.conf /etc/nginx/sites-enabled/default
+COPY images/nginx-prod.conf /etc/nginx/sites-enabled/default
 COPY images/xdebug_disabled.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 COPY images/entrypoint.sh /etc/entrypoint.sh
 RUN chmod +x /etc/entrypoint.sh
