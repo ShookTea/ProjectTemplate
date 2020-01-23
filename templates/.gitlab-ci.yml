@@ -32,7 +32,7 @@ php_image:
 # INSTALL #
 ###########
 
-install frontend dependencies:
+front_dep:
   stage: install
   image: node:12.13.0-alpine
   script:
@@ -43,8 +43,7 @@ install frontend dependencies:
       - frontend/node_modules
     expire_in: 1 hour
 
-
-install backend dependencies:
+back_dep:
   stage: install
   image: ${GITLAB_REPO}/php-dev
   script:
@@ -62,24 +61,27 @@ install backend dependencies:
 eslint:
   stage: test
   image: node:12.13.0-alpine
+  needs: [ "front_dep" ]
   dependencies:
     - install frontend dependencies
   script:
     - cd frontend
     - npm run test:lint
 
-frontend unit test:
+front_unit:
   stage: test
   image: node:12.13.0-alpine
+  needs: [ "front_dep" ]
   dependencies:
     - install frontend dependencies
   script:
     - cd frontend
     - npm run test:unit
 
-build frontend:
+front_build:
   stage: test
   image: node:12.13.0-alpine
+  needs: [ "front_dep" ]
   dependencies:
     - install frontend dependencies
   script:
@@ -90,27 +92,30 @@ build frontend:
       - frontend/dist
     expire_in: 1 hour
 
-code sniffer:
+phpcs:
   stage: test
   image: ${GITLAB_REPO}/php-dev
+  needs: [ "back_dep" ]
   dependencies:
     - install backend dependencies
   script:
     - cd backend
     - vendor/bin/phpcs
 
-static analysis:
+phpstan:
   stage: test
   image: ${GITLAB_REPO}/php-dev
+  needs: [ "back_dep" ]
   dependencies:
     - install backend dependencies
   script:
     - cd backend
     - vendor/bin/phpstan analyse --level max src
 
-backend unit test:
+phpunit:
   stage: test
   image: ${GITLAB_REPO}/php-dev
+  needs: [ "back_dep" ]
   dependencies:
     - install backend dependencies
   services:
@@ -130,7 +135,7 @@ backend unit test:
     - vendor/bin/phpunit --coverage-text
   coverage: '/^\s*Lines:\s*\d+.\d+\%/'
 
-Build app (master):
+build_master:
   stage: build
   image: docker:latest
   services:
@@ -149,7 +154,7 @@ Build app (master):
     - docker build -t ${GITLAB_REPO}:latest .
     - docker push ${GITLAB_REPO}:latest
 
-Build app (tag):
+build_tag:
   stage: build
   image: docker:latest
   services:
