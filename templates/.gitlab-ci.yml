@@ -62,8 +62,7 @@ eslint:
   stage: test
   image: node:12.13.0-alpine
   needs: [ "front_dep" ]
-  dependencies:
-    - install frontend dependencies
+  dependencies: [ "front_dep" ]
   script:
     - cd frontend
     - npm run test:lint
@@ -72,8 +71,7 @@ front_unit:
   stage: test
   image: node:12.13.0-alpine
   needs: [ "front_dep" ]
-  dependencies:
-    - install frontend dependencies
+  dependencies: [ "front_dep" ]
   script:
     - cd frontend
     - npm run test:unit
@@ -82,8 +80,7 @@ front_build:
   stage: test
   image: node:12.13.0-alpine
   needs: [ "front_dep" ]
-  dependencies:
-    - install frontend dependencies
+  dependencies: [ "front_dep" ]
   script:
     - cd frontend
     - npm run build
@@ -96,8 +93,7 @@ phpcs:
   stage: test
   image: ${GITLAB_REPO}/php-dev
   needs: [ "back_dep" ]
-  dependencies:
-    - install backend dependencies
+  dependencies: [ "back_dep" ]
   script:
     - cd backend
     - vendor/bin/phpcs
@@ -106,8 +102,7 @@ phpstan:
   stage: test
   image: ${GITLAB_REPO}/php-dev
   needs: [ "back_dep" ]
-  dependencies:
-    - install backend dependencies
+  dependencies: [ "back_dep" ]
   script:
     - cd backend
     - vendor/bin/phpstan analyse --level max src
@@ -116,8 +111,7 @@ phpunit:
   stage: test
   image: ${GITLAB_REPO}/php-dev
   needs: [ "back_dep" ]
-  dependencies:
-    - install backend dependencies
+  dependencies: [ "back_dep" ]
   services:
     - mysql:8.0.15
   variables:
